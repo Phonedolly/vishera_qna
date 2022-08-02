@@ -6,7 +6,12 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
-ITER_COUNT = 3
+ITER_COUNT = 900
+
+
+def crawling_routine(url: str, iter_count: int) -> list:
+    webdriver_init()
+    return crawling(_url=url, _iter_count=iter_count)
 
 
 def webdriver_init() -> webdriver:
@@ -15,13 +20,13 @@ def webdriver_init() -> webdriver:
     return webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 
 
-def crawling(_driver: webdriver) -> None:
+def crawling(_url: str, _iter_count: int, _driver: webdriver) -> list:
     viewer = []
     titles = []
-    scroll_time_pause = 0.75
+    scroll_time_pause = 2
     count = 0
 
-    _driver.get('https://m.cafe.naver.com/ca-fe/web/cafes/28173877/menus/23')
+    _driver.get(_url)
     last_height = _driver.execute_script("return document.body.scrollHeight")
 
     while True:
@@ -40,9 +45,9 @@ def crawling(_driver: webdriver) -> None:
         if new_height == last_height:
             try:
                 more_button = _driver.find_element(By.CLASS_NAME, 'u_cbox_btn_more')
-                if more_button and count < ITER_COUNT:
+                if more_button and count < iter_count:
                     more_button.click()
-                    scroll_time_pause = 0.1
+                    scroll_time_pause = 0.3  # 로딩이 완료되었으므로 더 빠르게 진행 가능
                 else:
                     break
             except NoSuchElementException:
@@ -50,6 +55,7 @@ def crawling(_driver: webdriver) -> None:
                 break
 
         last_height = new_height
+        print(count)
         count += 1
 
     viewer += _driver.find_elements(By.CLASS_NAME, 'txt_area')
@@ -59,8 +65,10 @@ def crawling(_driver: webdriver) -> None:
         if title:
             titles += [title]
 
-    with open('data.txt', 'w') as f:
+    with open('data.txt', 'w', encoding='utf-8') as f:
         for title in titles:
             f.write(title + '\n')
 
     _driver.quit()
+
+    return titles
