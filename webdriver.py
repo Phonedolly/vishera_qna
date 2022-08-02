@@ -10,8 +10,8 @@ ITER_COUNT = 900
 
 
 def crawling_routine(url: str, iter_count: int) -> list:
-    webdriver_init()
-    return crawling(_url=url, _iter_count=iter_count)
+    driver = webdriver_init()
+    return crawling(_url=url, _iter_count=iter_count, _driver=driver)
 
 
 def webdriver_init() -> webdriver:
@@ -45,7 +45,7 @@ def crawling(_url: str, _iter_count: int, _driver: webdriver) -> list:
         if new_height == last_height:
             try:
                 more_button = _driver.find_element(By.CLASS_NAME, 'u_cbox_btn_more')
-                if more_button and count < iter_count:
+                if more_button and count < _iter_count:
                     more_button.click()
                     scroll_time_pause = 0.3  # 로딩이 완료되었으므로 더 빠르게 진행 가능
                 else:

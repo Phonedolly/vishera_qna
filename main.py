@@ -25,12 +25,13 @@ def clear_screen():
 
 
 if __name__ == '__main__':
-    print('input mode. full(F), total(FREE), qna(QNA), from recent data(FRD): ', end='')
+    # print('input mode. full(F), total(FREE), qna(QNA), from recent data(FRD): ', end='')
+    print('input mode. total(FREE), qna(QNA), from recent data(FRD): ', end='')
     mode = input().upper()
-    if mode == 'F':
-        analyze(crawling_routine(TOTAL_URL, TOTAL_ITER_COUNT))
-        analyze(crawling_routine(QNA_URL, QNA_ITER_COUNT))
-    elif mode == 'FREE':
+    # if mode == 'F':
+    #     analyze(crawling_routine(TOTAL_URL, TOTAL_ITER_COUNT))
+    #     analyze(crawling_routine(QNA_URL, QNA_ITER_COUNT))
+    if mode == 'FREE':
         analyze(crawling_routine(TOTAL_URL, TOTAL_ITER_COUNT))
     elif mode == 'QNA':
         analyze(crawling_routine(QNA_URL, QNA_ITER_COUNT))
@@ -42,6 +43,6 @@ if __name__ == '__main__':
             if not file_line:
                 break
             else:
-                data += [file_line]
+                data += [file_line[:-1]]
         f.close()
         analyze(data)
